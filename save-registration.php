@@ -12,6 +12,10 @@ $username = $_POST['username'];
 // display the username value entered in the form from the $_POST array
 echo ' <p>Your username is: ' . $username . '</p>';
 echo "<p>Your username is $username</p>";
+
+if ($password = $confirm) {
+
+}
 ?>
 
 </body>
