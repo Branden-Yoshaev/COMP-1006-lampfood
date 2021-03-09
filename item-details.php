@@ -11,7 +11,7 @@ if (!empty($_GET['itemId'])) {
         $itemId = $_GET['itemId'];
 
         // connect
-        $db = new PDO('mysql:host=172.31.22.43;dbname=Branden1137913', 'Branden1137913', 'Lk0ULGu41Y');
+        include 'db.php';
 
         // fetch selected item
         $sql = "SELECT * FROM items WHERE itemId = :itemId";
@@ -21,60 +21,56 @@ if (!empty($_GET['itemId'])) {
         $item = $cmd->fetch(); // use fetch for as single record
     }
 }
+
+$pageTitle = "Item Details";
+include 'header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Item Details</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
-</head>
-<body>
-<main class="container">
-    <h1>Grocery Item</h1>
-    <form method="post" action="save-item.php">
-        <fieldset>
-            <label for="name" class="col-2">Name: </label>
-            <input name="name" id="name" required value="<?php echo $item['name']; ?>" />
-        </fieldset>
-        <fieldset>
-            <label for="quantity" class="col-2">Quantity: </label>
-            <input name="quantity" id="quantity" required type="number" min="1" value="<?php echo $item['quantity']; ?>" />
-        </fieldset>
-        <fieldset>
-            <label for="categoryId" class="col-2">Category: </label>
-            <select name="categoryId" id="categoryId">
-                <?php
-                // connect
-                $db = new PDO('mysql:host=172.31.22.43;dbname=Branden1137913', 'Branden1137913', 'Lk0ULGu41Y');
 
-                // set up query to fetch categories
-                $sql = "SELECT * FROM categories ORDER BY name";
+    <main class="container">
+        <h1>Grocery Item</h1>
+        <form method="post" action="save-item.php">
+            <fieldset>
+                <label for="name" class="col-2">Name: </label>
+                <input name="name" id="name" required value="<?php echo $item['name']; ?>" />
+            </fieldset>
+            <fieldset>
+                <label for="quantity" class="col-2">Quantity: </label>
+                <input name="quantity" id="quantity" required type="number" min="1" value="<?php echo $item['quantity']; ?>" />
+            </fieldset>
+            <fieldset>
+                <label for="categoryId" class="col-2">Category: </label>
+                <select name="categoryId" id="categoryId">
+                    <?php
+                    // connect
+                    $db = new PDO('mysql:host=172.31.22.43;dbname=Branden1137913', 'Branden1137913', 'Lk0ULGu41Y');
 
-                // set up & execute command
-                $cmd = $db->prepare($sql);
-                $cmd->execute();
-                $categories = $cmd->fetchAll();
+                    // set up query to fetch categories
+                    $sql = "SELECT * FROM categories ORDER BY name";
 
-                // loop through the results adding each category to the dropdown list
-                foreach ($categories as $c) {
-                    // check if current category matches the item category when editing
-                    if ($item['categoryId'] == $c['categoryId']) {
-                        echo '<option selected value="' . $c['categoryId'] . '">' . $c['name'] . '</option>';
+                    // set up & execute command
+                    $cmd = $db->prepare($sql);
+                    $cmd->execute();
+                    $categories = $cmd->fetchAll();
+
+                    // loop through the results adding each category to the dropdown list
+                    foreach ($categories as $c) {
+                        // check if current category matches the item category when editing
+                        if ($item['categoryId'] == $c['categoryId']) {
+                            echo '<option selected value="' . $c['categoryId'] . '">' . $c['name'] . '</option>';
+                        }
+                        else {
+                            echo '<option value="' . $c['categoryId'] . '">' . $c['name'] . '</option>';
+                        }
                     }
-                    else {
-                        echo '<option value="' . $c['categoryId'] . '">' . $c['name'] . '</option>';
-                    }
-                }
 
-                // disconnect
-                $db = null;
-                ?>
-            </select>
-        </fieldset>
-        <input type="hidden" name="itemId" id="itemId" value="<?php echo $item['itemId']; ?>" />
-        <button class="offset-2 btn btn-primary">Save</button>
-    </form>
-</main>
-</body>
-</html>
+                    // disconnect
+                    $db = null;
+                    ?>
+                </select>
+            </fieldset>
+            <input type="hidden" name="itemId" id="itemId" value="<?php echo $item['itemId']; ?>" />
+            <button class="offset-2 btn btn-primary">Save</button>
+        </form>
+    </main>
+
+<?php include 'footer.php'; ?>
