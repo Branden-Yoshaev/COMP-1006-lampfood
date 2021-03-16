@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Saving your Registration...</title>
-</head>
-<body>
 <?php
+$pageTitle = "Registering...";
+include 'header.php';
+
 // store the user's input in a variable (optional but recommended by simplicity)
 $username = $_POST['username'];
 $password = $_POST['password'];
@@ -32,6 +28,18 @@ if ($password != $confirm) {
 if ($ok) {
     // connect
     include 'db.php';
+    // check username doesn't already exist
+    $sql = "SELECT userId FROM users WHERE username = :username";
+    $cmd = $db->prepare($sql);
+    $cmd->bindParam(':username', $username, PDO::PARAM_STR, 100);
+    $cmd->execute();
+    $user = $cmd->fetch();
+
+    if ($user) {
+        echo '<p class="alert alert-danger">User already exists</p>';
+        $db = null;
+        exit(); // stop execution of the rest of this php block
+    }
 
     // set up SQL INSERT
     $sql = "INSERT INTO users (username, password) VALUES (:username, :password)";
@@ -51,6 +59,7 @@ if ($ok) {
     // confirmation
     echo '<h1>Registration Saved</h1><p>Click <a href="login.php">Login</a> to enter the site</p>';
 }
+
+include 'footer.php';
 ?>
-</body>
-</html>
+
