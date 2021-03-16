@@ -15,7 +15,7 @@ include 'header.php';
             <input type="password" name="password" id="password" required />
         </fieldset>
         <div class="offset-3">
-            <button>Login</button>
+            <button class="btn btn-primary">Login</button>
         </div>
     </form>
 </main>
