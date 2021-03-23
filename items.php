@@ -4,7 +4,7 @@ include 'header.php'; ?>
     <h1>Grocery List</h1>
     <a href="item-details.php">Add an Item</a>
 <?php
-try {
+//try {
 // 1. Connect to the db.  Host: 172.31.22.43, DB: dbNameHere, Username: usernameHere, PW: passwordHere
 include 'db.php';
 
@@ -42,11 +42,11 @@ echo '</table>';
 
 // 6. Disconnect from the database
 $db = null;
-}
-catch(exception $e) {
+//}
+//catch(exception $e) {
     /* mail('me@email.com', 'Lamp Food Error', $e,
         'From:contact@lampfood.com'); */
-    header('location:error.php');
-}
+//    header('location:error.php');
+//}
 include 'footer.php';
 ?>

@@ -6,7 +6,7 @@
 </head>
 <body>
 <?php
-try {
+//try {
 // 1. store the form inputs in variables (optional but reduces syntax errors)
     $name = $_POST['name'];
     $quantity = $_POST['quantity'];
@@ -82,12 +82,12 @@ try {
         //echo "<h1>Item Saved</h1>";
         header('location:items.php');
     }
-}
-catch(exception $e) {
+//}
+//catch(exception $e) {
     /* mail('me@email.com', 'Lamp Food Error', $e,
         'From:contact@lampfood.com'); */
-    header('location:error.php');
-}
+//    header('location:error.php');
+//}
 ?>
 </body>
 </html>
