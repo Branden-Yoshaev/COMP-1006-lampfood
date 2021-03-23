@@ -6,8 +6,11 @@
 </head>
 <body>
 <?php
+// auth check
+include 'auth.php';
+
 // 1. store the form inputs in variables (optional but reduces syntax errors)
-$category = $_POST['name'];
+$category = $_POST['category'];
 $ok = true;
 
 // 1a. validate for null value
@@ -18,7 +21,7 @@ if (empty($category)) {
 
 if ($ok) {
     // 2. connect to db
-    $db = new PDO('mysql:host=172.31.22.43;dbname=Branden1137913', 'Branden1137913', 'Lk0ULGu41Y');
+    $db = new PDO('mysql:host=172.31.22.43;dbname=Rich100', 'Rich100', 'Vda787-KJ_');
 
     // 3. set up an SQL INSERT command w/2 parameters that have : prefixes
     $sql = "INSERT INTO categories (name) VALUES (:name)";

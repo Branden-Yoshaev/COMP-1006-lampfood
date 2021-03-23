@@ -1,3 +1,7 @@
+<?php
+// auth check
+include 'auth.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,11 +9,11 @@
     <title>Category Details</title>
 </head>
 <body>
-<h1>Grocery Categories</h1>
+<h1>Category</h1>
 <form method="post" action="save-category.php">
     <fieldset>
-        <label for="name">Category name:</label>
-        <input name="name" id="name" required />
+        <label for="category">Category Name: </label>
+        <input name="category" id="category" required />
     </fieldset>
     <button>Save</button>
 </form>

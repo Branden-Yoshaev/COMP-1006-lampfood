@@ -6,60 +6,68 @@
 </head>
 <body>
 <?php
-//try {
+// auth check
+include 'auth.php';
+
 // 1. store the form inputs in variables (optional but reduces syntax errors)
-    $name = $_POST['name'];
-    $quantity = $_POST['quantity'];
-    $categoryId = $_POST['categoryId'];
-    $itemId = $_POST['itemId']; // hidden field; blank when adding, has value when editing
-    $ok = true;
+$name = $_POST['name'];
+$quantity = $_POST['quantity'];
+$categoryId = $_POST['categoryId'];
+$itemId = $_POST['itemId']; // hidden field; blank when adding, has value when editing
+$ok = true;
 
 // 1a. validate inputs before saving
-    if (empty(trim($name))) {
-        echo 'Name is required<br />';
+if (empty(trim($name))) {
+    echo 'Name is required<br />';
+    $ok = false;
+}
+
+if (empty($quantity)) {
+    echo 'Quantity is required<br />';
+    $ok = false;
+}
+else {
+    if (!is_numeric($quantity)) {
+        echo 'Quantity must be a number<br />';
         $ok = false;
     }
-
-    if (empty($quantity)) {
-        echo 'Quantity is required<br />';
-        $ok = false;
-    } else {
-        if (!is_numeric($quantity)) {
-            echo 'Quantity must be a number<br />';
+    else {
+        if ($quantity < 1) {
+            echo 'Quantity must be greater than zero';
             $ok = false;
-        } else {
-            if ($quantity < 1) {
-                echo 'Quantity must be greater than zero';
-                $ok = false;
-            }
         }
     }
+}
 
-    if (empty($categoryId)) {
-        echo 'Category is required<br />';
+if (empty($categoryId)) {
+    echo 'Category is required<br />';
+    $ok = false;
+}
+else {
+    if (!is_numeric($categoryId)) {
+        echo 'Category must be a number<br />';
         $ok = false;
-    } else {
-        if (!is_numeric($categoryId)) {
-            echo 'Category must be a number<br />';
+    }
+    else {
+        if ($categoryId < 1) {
+            echo 'Category must be greater than zero';
             $ok = false;
-        } else {
-            if ($categoryId < 1) {
-                echo 'Category must be greater than zero';
-                $ok = false;
-            }
         }
     }
+}
 
-    if ($ok) {
+if ($ok) {
+    try {
         // 2. connect to db
         include 'db.php';
 
         // 3. set up an SQL command w/parameters that have : prefixes
         if (empty($itemId)) {
             $sql = "INSERT INTO items (name, quantity, categoryId) VALUES (:name, :quantity, :categoryId)";
-        } else {
+        }
+        else {
             $sql = "UPDATE items SET name = :name, quantity = :quantity, categoryId = :categoryId 
-            WHERE itemId = :itemId";
+                WHERE itemId = :itemId";
         }
 
         // 4. populate the INSERT with our variables using a Command variable to prevent SQL Injection
@@ -77,17 +85,14 @@
 
         // 6. disconnect
         $db = null;
-
-        // 7. show confirmation message to user
-        //echo "<h1>Item Saved</h1>";
-        header('location:items.php');
     }
-//}
-//catch(exception $e) {
-    /* mail('me@email.com', 'Lamp Food Error', $e,
-        'From:contact@lampfood.com'); */
-//    header('location:error.php');
-//}
+    catch (exception $e) {
+        header('location:error.php');
+    }
+
+    // 7. show confirmation message to user
+    //echo "<h1>Item Saved</h1>";
+    //header('location:items.php');
+}
 ?>
 </body>
-</html>

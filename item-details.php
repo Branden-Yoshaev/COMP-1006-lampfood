@@ -1,4 +1,7 @@
 <?php
+// auth check
+include 'auth.php';
+
 // initialize $item variable
 $item = null;
 $item['name'] = null;
@@ -10,15 +13,20 @@ if (!empty($_GET['itemId'])) {
     if (is_numeric($_GET['itemId'])) {
         $itemId = $_GET['itemId'];
 
-        // connect
-        include 'db.php';
+        try {
+            // connect
+            include 'db.php';
 
-        // fetch selected item
-        $sql = "SELECT * FROM items WHERE itemId = :itemId";
-        $cmd = $db->prepare($sql);
-        $cmd->bindParam(':itemId', $itemId, PDO::PARAM_INT);
-        $cmd->execute();
-        $item = $cmd->fetch(); // use fetch for as single record
+            // fetch selected item
+            $sql = "SELECT * FROM items WHERE itemId = :itemId";
+            $cmd = $db->prepare($sql);
+            $cmd->bindParam(':itemId', $itemId, PDO::PARAM_INT);
+            $cmd->execute();
+            $item = $cmd->fetch(); // use fetch for as single record
+        }
+        catch (exception $e) {
+            header('location:error.php');
+        }
     }
 }
 
@@ -42,7 +50,7 @@ include 'header.php';
                 <select name="categoryId" id="categoryId">
                     <?php
                     // connect
-                    $db = new PDO('mysql:host=172.31.22.43;dbname=Branden1137913', 'Branden1137913', 'Lk0ULGu41Y');
+                    include 'db.php';
 
                     // set up query to fetch categories
                     $sql = "SELECT * FROM categories ORDER BY name";

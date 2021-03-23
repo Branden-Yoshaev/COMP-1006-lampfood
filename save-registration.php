@@ -37,29 +37,27 @@ if ($ok) {
 
     if ($user) {
         echo '<p class="alert alert-danger">User already exists</p>';
-        $db = null;
-        exit(); // stop execution of the rest of this php block
     }
+    else {
+        // set up SQL INSERT
+        $sql = "INSERT INTO users (username, password) VALUES (:username, :password)";
+        $cmd = $db->prepare($sql);
 
-    // set up SQL INSERT
-    $sql = "INSERT INTO users (username, password) VALUES (:username, :password)";
-    $cmd = $db->prepare($sql);
+        // hash the password & fill params
+        $password = password_hash($password, PASSWORD_DEFAULT);
+        $cmd->bindParam(':username', $username, PDO::PARAM_STR, 100);
+        $cmd->bindParam(':password', $password, PDO::PARAM_STR, 128);
 
-    // hash the password & fill params
-    $password = password_hash($password, PASSWORD_DEFAULT);
-    $cmd->bindParam(':username', $username, PDO::PARAM_STR, 100);
-    $cmd->bindParam(':password', $password, PDO::PARAM_STR, 128);
+        // save to db
+        $cmd->execute();
 
-    // save to db
-    $cmd->execute();
+        // confirmation
+        echo '<h1>Registration Saved</h1><p>Click <a href="login.php">Login</a> to enter the site</p>';
+    }
 
     // disconnect
     $db = null;
-
-    // confirmation
-    echo '<h1>Registration Saved</h1><p>Click <a href="login.php">Login</a> to enter the site</p>';
 }
 
 include 'footer.php';
 ?>
-
