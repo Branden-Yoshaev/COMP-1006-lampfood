@@ -53,7 +53,7 @@ else {
 }
 
 if ($ok) {
-    try {
+    //try {
         // 2. connect to db
         include 'db.php';
 
@@ -81,10 +81,10 @@ if ($ok) {
 
         // 6. disconnect
         $db = null;
-    }
-    catch (exception $e) {
-        header('location:error.php');
-    }
+//    }
+//    catch (exception $e) {
+//        header('location:error.php');
+//    }
 
     // 7. show confirmation message to user
     //echo "<h1>Item Saved</h1>";
