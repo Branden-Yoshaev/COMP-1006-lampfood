@@ -7,7 +7,7 @@
 <body>
 <?php
 // 1. store the form inputs in variables (optional but reduces syntax errors)
-$category = $_POST['category'];
+$category = $_POST['name'];
 $ok = true;
 
 // 1a. validate for null value
