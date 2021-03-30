@@ -12,6 +12,8 @@ $categoryId = $_POST['categoryId'];
 $itemId = $_POST['itemId']; // hidden field; blank when adding, has value when editing
 $ok = true;
 
+
+
 // 1a. validate inputs before saving
 if (empty(trim($name))) {
     echo 'Name is required<br />';
@@ -52,39 +54,58 @@ else {
     }
 }
 
+if (!empty($_FILES['photo']['name'])) {
+    // check that upload is an image
+    $type = mime_content_type($_FILES['photo']['tmp_name']);
+    if ($type != 'image/jpeg' && $type != 'image/png') {
+        echo 'Invalid file type<br />';
+        $ok = false;
+    }
+    else {
+        // give file a unique name & save to img/item-uploads
+        $photo = session_id() . "-" . $_FILES['photo']['name'];
+        move_uploaded_file($_FILES['photo']['tmp_name'], "img/item-uploads/$photo");
+    }
+}
+else {
+    $photo = null;
+}
+
 if ($ok) {
     //try {
-        // 2. connect to db
-        include 'db.php';
+    // 2. connect to db
+    include 'db.php';
 
-        // 3. set up an SQL command w/parameters that have : prefixes
-        if (empty($itemId)) {
-            $sql = "INSERT INTO items (name, quantity, categoryId) VALUES (:name, :quantity, :categoryId)";
-        }
-        else {
-            $sql = "UPDATE items SET name = :name, quantity = :quantity, categoryId = :categoryId 
+    // 3. set up an SQL command w/parameters that have : prefixes
+    if (empty($itemId)) {
+        $sql = "INSERT INTO items (name, quantity, categoryId, photo) 
+            VALUES (:name, :quantity, :categoryId, :photo)";
+    }
+    else {
+        $sql = "UPDATE items SET name = :name, quantity = :quantity, categoryId = :categoryId 
                 WHERE itemId = :itemId";
-        }
+    }
 
-        // 4. populate the INSERT with our variables using a Command variable to prevent SQL Injection
-        $cmd = $db->prepare($sql);
-        $cmd->bindParam(':name', $name, PDO::PARAM_STR, 50);
-        $cmd->bindParam(':quantity', $quantity, PDO::PARAM_INT);
-        $cmd->bindParam(':categoryId', $categoryId, PDO::PARAM_INT);
+    // 4. populate the INSERT with our variables using a Command variable to prevent SQL Injection
+    $cmd = $db->prepare($sql);
+    $cmd->bindParam(':name', $name, PDO::PARAM_STR, 50);
+    $cmd->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+    $cmd->bindParam(':categoryId', $categoryId, PDO::PARAM_INT);
+    $cmd->bindParam(':photo', $photo, PDO::PARAM_STR, 100);
 
-        // fill itemId param if editing existing record
-        if (!empty($itemId)) {
-            $cmd->bindParam(':itemId', $itemId, PDO::PARAM_INT);
-        }
-        // 5. execute the SQL command to save the data
-        $cmd->execute();
+    // fill itemId param if editing existing record
+    if (!empty($itemId)) {
+        $cmd->bindParam(':itemId', $itemId, PDO::PARAM_INT);
+    }
+    // 5. execute the SQL command to save the data
+    $cmd->execute();
 
-        // 6. disconnect
-        $db = null;
-//    }
-//    catch (exception $e) {
-//        header('location:error.php');
-//    }
+    // 6. disconnect
+    $db = null;
+    /*  }
+      catch (exception $e) {
+          header('location:error.php');
+      } */
 
     // 7. show confirmation message to user
     //echo "<h1>Item Saved</h1>";
