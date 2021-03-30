@@ -8,7 +8,7 @@ if (!empty($_SESSION['username'])) {
     echo '<a href="item-details.php">Add an Item</a>';
 }
 
-//try {
+try {
     // 1. Connect to the db.  Host: 172.31.22.43, DB: dbNameHere, Username: usernameHere, PW: passwordHere
     include 'db.php';
 
@@ -26,7 +26,7 @@ if (!empty($_SESSION['username'])) {
     // 5. Use a foreach loop to iterate (cycle) through all the values in the $items variable.  Inside this loop, use an echo command to display the name of each item.  See https://www.php.net/manual/en/control-structures.foreach.php for details.
     // start an HTML table for formatting BEFORE the foreach loop
     echo '<table class="table table-striped table-light">
-        <thead><th>Category</th><th>Name</th><th>Quantity</th>';
+        <thead><th>Category</th><th>Name</th><th>Quantity</th><th></th>';
 
     if (!empty($_SESSION['username'])) {
         echo '<th>Actions</th>';
@@ -47,6 +47,12 @@ if (!empty($_SESSION['username'])) {
         }
 
         echo '<td>' . $indItems['quantity'] . '</td>';
+        echo '<td>'; // show photo if any
+        if (!empty($indItems['photo'])) {
+            echo '<img src="img/item-uploads/' . $indItems['photo'] . '"
+                alt="Item Photo" class="thumbnail" />';
+        }
+        echo '</td>';
 
         if (!empty($_SESSION['username'])) {
             echo '<td><a href="item-details.php?itemId=' . $indItems['itemId'] .
@@ -63,12 +69,12 @@ if (!empty($_SESSION['username'])) {
 
     // 6. Disconnect from the database
     $db = null;
-//}
-//catch (exception $e) {
+}
+catch (exception $e) {
     /* mail('me@email.com', 'Lamp Food Error', $e,
         'From:contact@lampfood.com'); */
-//    header('location:error.php');
-//}
+    header('location:error.php');
+}
 
 include 'footer.php';
 ?>
